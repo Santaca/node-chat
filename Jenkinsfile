@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        registry = '244889495851.dkr.ecr.us-east-1.amazonaws.com/unir-jenkins'
+        registry = '${ECR_URI}'
     }
     
     stages {
@@ -23,8 +23,8 @@ pipeline {
         stage('Docker Push') {
             steps {
                 script {
-                    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 244889495851.dkr.ecr.us-east-1.amazonaws.com'
-                   sh 'docker push 244889495851.dkr.ecr.us-east-1.amazonaws.com/unir-jenkins'
+                    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ECR_URI}'
+                   sh 'docker push ${ECR_URI}'
                 }
             }
         }
@@ -40,7 +40,7 @@ pipeline {
         stage("Run Docker Container") {
             steps {
                 script {
-                    sh 'docker run -d -p 3000:3000 --name unirtest 244889495851.dkr.ecr.us-east-1.amazonaws.com/unir-jenkins:latest'
+                    sh 'docker run -d -p 3000:3000 --name unirtest ${ECR_URI}:latest'
                 }
             }
         }
